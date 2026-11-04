@@ -108,5 +108,12 @@ card.style.display=card.innerText.toLowerCase().includes(value)?'block':'none';
 }
 </script>
 
-</body>
+</body><script>
+document.querySelectorAll('button').forEach(button => {
+  button.addEventListener('click', () => {
+    const category = button.textContent.trim();
+    alert('მალე დაემატება ' + category + '-ის აქციები!');
+  });
+});
+</script>
 </html>

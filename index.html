@@ -3,33 +3,180 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKCIEBI.GE - აქციები საქართველოში</title>
+<title>AKCIEBI.GE — ყველა აქცია ერთ სივრცეში</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#222}
-header{background:#102b50;color:white;padding:22px;text-align:center}
-header h1{margin:0;color:#ffcc36;font-size:32px}
-header p{margin:8px 0 0}
-nav{background:white;padding:15px;text-align:center}
-nav a{margin:8px;color:#102b50;text-decoration:none;font-weight:bold}
-.hero{padding:35px 15px;text-align:center;background:#173e70;color:white}
-.hero h2{font-size:27px}
-input{padding:14px;width:90%;max-width:450px;border:1px solid #ddd;border-radius:8px;font-size:16px}
-.categories{text-align:center;padding:20px}
-button{padding:11px 17px;margin:5px;border:0;border-radius:7px;background:#ffcc36;cursor:pointer}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;padding:18px}
-.card{background:white;padding:18px;border-radius:12px;box-shadow:0 2px 9px #ddd}
+
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#f3f5f9;
+ color:#202b3c;
+}
+
+header{
+ background:#102b50;
+ color:white;
+ padding:22px 15px;
+ text-align:center;
+}
+
+.logo{
+ color:#ffcc36;
+ font-size:34px;
+ font-weight:bold;
+}
+
+header p{margin:7px}
+
+nav{
+ background:white;
+ padding:15px;
+ text-align:center;
+ box-shadow:0 2px 6px #ddd;
+}
+
+nav a{
+ color:#102b50;
+ text-decoration:none;
+ margin:10px;
+ font-weight:bold;
+}
+
+.hero{
+ background:linear-gradient(120deg,#102b50,#2865a5);
+ color:white;
+ text-align:center;
+ padding:45px 15px;
+}
+
+.hero h2{font-size:28px}
+
+.search{
+ width:90%;
+ max-width:550px;
+ padding:15px;
+ border:0;
+ border-radius:10px;
+ font-size:16px;
+}
+
+.container{
+ max-width:1150px;
+ margin:auto;
+ padding:20px;
+}
+
+.categories{
+ text-align:center;
+ margin:20px 0;
+}
+
+button{
+ background:#ffcc36;
+ border:0;
+ padding:12px 18px;
+ border-radius:8px;
+ margin:5px;
+ cursor:pointer;
+ font-weight:bold;
+}
+
+button:hover{background:#f0b900}
+
+.products{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:18px;
+}
+
+.card{
+ background:white;
+ border-radius:12px;
+ overflow:hidden;
+ box-shadow:0 3px 12px #ddd;
+}
+
+.card img{
+ width:100%;
+ height:170px;
+ object-fit:cover;
+ background:#eee;
+}
+
+.card-content{padding:15px}
+
 .card h3{color:#173e70}
-.price{color:#e43c3c;font-size:23px;font-weight:bold}
-.old{text-decoration:line-through;color:#888}
-.card a{display:block;background:#173e70;color:white;text-align:center;padding:12px;text-decoration:none;border-radius:7px}
-footer{background:#102b50;color:white;text-align:center;padding:25px}
+
+.price{
+ color:#e43c3c;
+ font-size:23px;
+ font-weight:bold;
+}
+
+.old{
+ color:#888;
+ text-decoration:line-through;
+}
+
+.details{
+ display:block;
+ background:#173e70;
+ color:white;
+ padding:12px;
+ text-align:center;
+ text-decoration:none;
+ border-radius:7px;
+ margin-top:12px;
+}
+
+.form-box{
+ background:white;
+ padding:22px;
+ border-radius:12px;
+ margin-top:35px;
+ box-shadow:0 2px 10px #ddd;
+}
+
+.form-box input,
+.form-box select{
+ width:100%;
+ padding:13px;
+ margin:8px 0;
+ border:1px solid #ddd;
+ border-radius:7px;
+ font-size:16px;
+}
+
+.add-button{
+ background:#173e70;
+ color:white;
+ width:100%;
+ padding:15px;
+}
+
+footer{
+ background:#102b50;
+ color:white;
+ text-align:center;
+ padding:30px;
+ margin-top:40px;
+}
+
+.empty{
+ text-align:center;
+ padding:30px;
+ color:#777;
+}
+
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>AKCIEBI.GE</h1>
+<div class="logo">AKCIEBI.GE</div>
 <p>ყველა ფასდაკლება ერთ სივრცეში</p>
 </header>
 
@@ -37,83 +184,210 @@ footer{background:#102b50;color:white;text-align:center;padding:25px}
 <a href="#">მთავარი</a>
 <a href="#categories">კატეგორიები</a>
 <a href="#offers">აქციები</a>
+<a href="#add">დაამატე აქცია</a>
 </nav>
 
 <section class="hero">
 <h2>იპოვე საუკეთესო ფასები საქართველოში!</h2>
 <p>შეადარე ფასები და დაზოგე ფული</p>
-<input id="search" placeholder="მოძებნე პროდუქტი ან მაღაზია..." oninput="searchItems()">
+
+<input class="search"
+id="search"
+placeholder="🔍 მოძებნე პროდუქტი ან მაღაზია..."
+oninput="showProducts()">
 </section>
 
-<section class="categories" id="categories">
+<div class="container">
+
+<section id="categories" class="categories">
 <h2>კატეგორიები</h2>
-<button onclick="filterItems('all')">ყველა</button>
-<button onclick="filterItems('საკვები')">საკვები</button>
-<button onclick="filterItems('ტექნიკა')">ტექნიკა</button>
-<button onclick="filterItems('სახლი')">სახლი</button>
-<button onclick="filterItems('ტანსაცმელი')">ტანსაცმელი</button>
+
+<button onclick="setCategory('ყველა')">ყველა</button>
+<button onclick="setCategory('საკვები')">საკვები</button>
+<button onclick="setCategory('ტექნიკა')">ტექნიკა</button>
+<button onclick="setCategory('სახლი')">სახლი</button>
+<button onclick="setCategory('ტანსაცმელი')">ტანსაცმელი</button>
+<button onclick="setCategory('სხვა')">სხვა</button>
 </section>
 
-<h2 style="text-align:center" id="offers">მიმდინარე შეთავაზებები</h2>
+<h2 id="offers">🔥 მიმდინარე შეთავაზებები</h2>
 
-<section class="products" id="products">
+<section class="products" id="products"></section>
 
-<div class="card" data-category="საკვები">
-<h3>საკვები პროდუქტები</h3>
-<p>მაღაზიის შეთავაზება</p>
-<p class="price">შეთავაზება</p>
-<a href="#">დეტალები</a>
-</div>
+<section class="form-box" id="add">
 
-<div class="card" data-category="ტექნიკა">
-<h3>ტექნიკა</h3>
-<p>ტექნიკის შეთავაზებები</p>
-<p class="price">შეთავაზება</p>
-<a href="#">დეტალები</a>
-</div>
+<h2>🏪 დაამატე შენი აქცია</h2>
 
-<div class="card" data-category="სახლი">
-<h3>სახლის ნივთები</h3>
-<p>სახლის პროდუქცია</p>
-<p class="price">შეთავაზება</p>
-<a href="#">დეტალები</a>
-</div>
+<p>მაღაზიას შეუძლია შეავსოს შეთავაზების ინფორმაცია.</p>
 
-<div class="card" data-category="ტანსაცმელი">
-<h3>ტანსაცმელი</h3>
-<p>ტანსაცმლის შეთავაზებები</p>
-<p class="price">შეთავაზება</p>
-<a href="#">დეტალები</a>
-</div>
+<form id="offerForm">
 
+<input id="store" placeholder="მაღაზიის დასახელება" required>
+
+<input id="product" placeholder="პროდუქტის დასახელება" required>
+
+<select id="category" required>
+<option value="">აირჩიე კატეგორია</option>
+<option>საკვები</option>
+<option>ტექნიკა</option>
+<option>სახლი</option>
+<option>ტანსაცმელი</option>
+<option>სხვა</option>
+</select>
+
+<input id="oldPrice" type="number" min="0"
+placeholder="ძველი ფასი (ლარი)" required>
+
+<input id="newPrice" type="number" min="0"
+placeholder="ახალი ფასი (ლარი)" required>
+
+<input id="photo" type="url"
+placeholder="პროდუქტის ფოტოს ბმული">
+
+<input id="link" type="url"
+placeholder="მაღაზიის პროდუქტის ბმული">
+
+<button class="add-button" type="submit">
+აქციის დამატება
+</button>
+
+</form>
 </section>
+
+</div>
 
 <footer>
 <h2>AKCIEBI.GE</h2>
 <p>საქართველოს ფასდაკლებების პლატფორმა</p>
-<p>© 2026 AKCIEBI.GE</p>
+<p>ყველა უფლება დაცულია © 2026</p>
 </footer>
 
 <script>
-function filterItems(category){
-document.querySelectorAll('.card').forEach(card=>{
-card.style.display=category==='all'||card.dataset.category===category?'block':'none';
-});
+
+let offers = JSON.parse(localStorage.getItem("offers")) || [];
+
+let selectedCategory = "ყველა";
+
+function saveOffers(){
+ localStorage.setItem("offers",JSON.stringify(offers));
 }
-function searchItems(){
-let value=document.getElementById('search').value.toLowerCase();
-document.querySelectorAll('.card').forEach(card=>{
-card.style.display=card.innerText.toLowerCase().includes(value)?'block':'none';
-});
+
+function setCategory(category){
+ selectedCategory=category;
+ showProducts();
 }
+
+function showProducts(){
+
+ let search=document.getElementById("search").value.toLowerCase();
+
+ let box=document.getElementById("products");
+
+ box.innerHTML="";
+
+ let filtered=offers.filter(item=>{
+
+ let matchesCategory=
+ selectedCategory==="ყველა" ||
+ item.category===selectedCategory;
+
+ let matchesSearch=
+ (item.product+" "+item.store).toLowerCase().includes(search);
+
+ return matchesCategory && matchesSearch;
+
+ });
+
+ if(filtered.length===0){
+ box.innerHTML='<div class="empty">ამ კატეგორიაში შეთავაზებები ჯერ არ არის.</div>';
+ return;
+ }
+
+ filtered.forEach(item=>{
+
+ let card=document.createElement("div");
+ card.className="card";
+
+ let image=document.createElement("img");
+ image.src=item.photo || "https://placehold.co/400x250?text=AKCIEBI.GE";
+ image.alt=item.product;
+
+ image.onerror=()=>{
+ image.src="https://placehold.co/400x250?text=AKCIEBI.GE";
+ };
+
+ let content=document.createElement("div");
+ content.className="card-content";
+
+ let title=document.createElement("h3");
+ title.textContent=item.product;
+
+ let store=document.createElement("p");
+ store.textContent="მაღაზია: "+item.store;
+
+ let price=document.createElement("p");
+ price.className="price";
+ price.textContent=item.newPrice+" ₾";
+
+ let old=document.createElement("p");
+ old.className="old";
+ old.textContent=item.oldPrice+" ₾";
+
+ content.append(title,store,old,price);
+
+ if(item.link){
+ let a=document.createElement("a");
+ a.className="details";
+ a.href=item.link;
+ a.target="_blank";
+ a.rel="noopener noreferrer";
+ a.textContent="მაღაზიაში გადასვლა";
+ content.append(a);
+ }
+
+ card.append(image,content);
+ box.append(card);
+
+ });
+
+}
+
+document.getElementById("offerForm").addEventListener("submit",function(e){
+
+ e.preventDefault();
+
+ let item={
+
+ store:document.getElementById("store").value,
+ product:document.getElementById("product").value,
+ category:document.getElementById("category").value,
+ oldPrice:document.getElementById("oldPrice").value,
+ newPrice:document.getElementById("newPrice").value,
+ photo:document.getElementById("photo").value,
+ link:document.getElementById("link").value
+
+ };
+
+ if(Number(item.newPrice)>=Number(item.oldPrice)){
+ alert("ახალი ფასი ძველ ფასზე ნაკლები უნდა იყოს.");
+ return;
+ }
+
+ offers.push(item);
+
+ saveOffers();
+
+ showProducts();
+
+ this.reset();
+
+ alert("აქცია წარმატებით დაემატა!");
+
+});
+
+showProducts();
+
 </script>
 
-</body><script>
-document.querySelectorAll('button').forEach(button => {
-  button.addEventListener('click', () => {
-    const category = button.textContent.trim();
-    alert('მალე დაემატება ' + category + '-ის აქციები!');
-  });
-});
-</script>
+</body>
 </html>

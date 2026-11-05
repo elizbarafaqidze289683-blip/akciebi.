@@ -389,5 +389,31 @@ showProducts();
 
 </script>
 
-</body>
+</body><!-- Supabase connection -->
+<script type="module">
+import { createClient } from
+'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const supabase = createClient(
+  'https://hmdkcezcpmdtpbajjfli.supabase.co',
+  'sb_publishable__v2TkxSNYHNVuIa8P7lQuQ_-SnQqFio'
+);
+
+async function loadOffers() {
+  const { data, error } = await supabase
+    .from('offers')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (!error) {
+    offers = data;
+    saveOffers();
+    showProducts();
+  } else {
+    console.log(error);
+  }
+}
+
+loadOffers();
+</script>
 </html>

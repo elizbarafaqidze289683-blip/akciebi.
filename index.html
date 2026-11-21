@@ -3,417 +3,215 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKCIEBI.GE — ყველა აქცია ერთ სივრცეში</title>
+<title>AKCIEBI.GE — აქციები საქართველოში</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{box-sizing:border-box}
-
 body{
  margin:0;
  font-family:Arial,sans-serif;
- background:#f3f5f9;
- color:#202b3c;
+ background:#f3f5f8;
+ color:#202938;
 }
-
 header{
- background:#102b50;
+ background:#142b4a;
  color:white;
- padding:22px 15px;
+ padding:24px 15px;
  text-align:center;
 }
-
-.logo{
- color:#ffcc36;
- font-size:34px;
- font-weight:bold;
-}
-
-header p{margin:7px}
-
-nav{
+header h1{margin:0;font-size:30px}
+header p{margin:8px 0 0;color:#d5e2f2}
+.container{max-width:1100px;margin:auto;padding:18px}
+.box{
  background:white;
- padding:15px;
- text-align:center;
- box-shadow:0 2px 6px #ddd;
+ padding:18px;
+ border-radius:12px;
+ margin-bottom:18px;
+ box-shadow:0 2px 9px #00000010;
 }
-
-nav a{
- color:#102b50;
- text-decoration:none;
- margin:10px;
- font-weight:bold;
+input,select,button{
+ width:100%;
+ padding:12px;
+ margin:6px 0;
+ border:1px solid #ccd3dc;
+ border-radius:7px;
+ font-size:15px;
 }
-
-.hero{
- background:linear-gradient(120deg,#102b50,#2865a5);
- color:white;
- text-align:center;
- padding:45px 15px;
-}
-
-.hero h2{font-size:28px}
-
-.search{
- width:90%;
- max-width:550px;
- padding:15px;
- border:0;
- border-radius:10px;
- font-size:16px;
-}
-
-.container{
- max-width:1150px;
- margin:auto;
- padding:20px;
-}
-
-.categories{
- text-align:center;
- margin:20px 0;
-}
-
 button{
- background:#ffcc36;
+ background:#1674d1;
+ color:white;
  border:0;
- padding:12px 18px;
- border-radius:8px;
- margin:5px;
  cursor:pointer;
  font-weight:bold;
 }
-
-button:hover{background:#f0b900}
-
-.products{
+button:hover{opacity:.9}
+.logout{background:#555}
+.delete{background:#c0392b}
+.edit{background:#e39b19}
+.grid{
  display:grid;
- grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
- gap:18px;
+ grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+ gap:16px;
 }
-
 .card{
  background:white;
  border-radius:12px;
  overflow:hidden;
- box-shadow:0 3px 12px #ddd;
+ box-shadow:0 2px 9px #00000012;
 }
-
 .card img{
  width:100%;
- height:170px;
+ height:175px;
  object-fit:cover;
  background:#eee;
 }
-
-.card-content{padding:15px}
-
-.card h3{color:#173e70}
-
-.price{
- color:#e43c3c;
- font-size:23px;
- font-weight:bold;
-}
-
-.old{
- color:#888;
- text-decoration:line-through;
-}
-
-.details{
- display:block;
- background:#173e70;
- color:white;
- padding:12px;
- text-align:center;
- text-decoration:none;
- border-radius:7px;
- margin-top:12px;
-}
-
-.form-box{
- background:white;
- padding:22px;
- border-radius:12px;
- margin-top:35px;
- box-shadow:0 2px 10px #ddd;
-}
-
-.form-box input,
-.form-box select{
- width:100%;
- padding:13px;
- margin:8px 0;
- border:1px solid #ddd;
- border-radius:7px;
- font-size:16px;
-}
-
-.add-button{
- background:#173e70;
- color:white;
- width:100%;
- padding:15px;
-}
-
-footer{
- background:#102b50;
- color:white;
- text-align:center;
- padding:30px;
- margin-top:40px;
-}
-
-.empty{
- text-align:center;
- padding:30px;
- color:#777;
-}
-
+.cardbody{padding:14px}
+.price{font-size:22px;color:#159447;font-weight:bold}
+.old{color:#999;text-decoration:line-through}
+.small{font-size:13px;color:#777}
+.hidden{display:none}
+#message{padding:10px;border-radius:7px;margin:10px 0}
+footer{text-align:center;padding:25px;color:#777}
 </style>
 </head>
 
 <body>
 
 <header>
-<div class="logo">AKCIEBI.GE</div>
-<p>ყველა ფასდაკლება ერთ სივრცეში</p>
+<h1>AKCIEBI.GE</h1>
+<p>ყველა აქცია ერთ სივრცეში</p>
 </header>
-
-<nav>
-<a href="#">მთავარი</a>
-<a href="#categories">კატეგორიები</a>
-<a href="#offers">აქციები</a>
-<a href="#add">დაამატე აქცია</a>
-</nav>
-
-<section class="hero">
-<h2>იპოვე საუკეთესო ფასები საქართველოში!</h2>
-<p>შეადარე ფასები და დაზოგე ფული</p>
-
-<input class="search"
-id="search"
-placeholder="🔍 მოძებნე პროდუქტი ან მაღაზია..."
-oninput="showProducts()">
-</section>
 
 <div class="container">
 
-<section id="categories" class="categories">
-<h2>კატეგორიები</h2>
+<div class="box">
+<h2>მომხმარებლის შესვლა</h2>
 
-<button onclick="setCategory('ყველა')">ყველა</button>
-<button onclick="setCategory('საკვები')">საკვები</button>
-<button onclick="setCategory('ტექნიკა')">ტექნიკა</button>
-<button onclick="setCategory('სახლი')">სახლი</button>
-<button onclick="setCategory('ტანსაცმელი')">ტანსაცმელი</button>
-<button onclick="setCategory('სხვა')">სხვა</button>
-</section>
+<input id="email" type="email" placeholder="ელფოსტა">
+<input id="password" type="password" placeholder="პაროლი">
 
-<h2 id="offers">🔥 მიმდინარე შეთავაზებები</h2>
+<button onclick="login()">შესვლა</button>
+<button onclick="register()">რეგისტრაცია</button>
+<button class="logout" onclick="logout()">გამოსვლა</button>
 
-<section class="products" id="products"></section>
+<p id="account"></p>
+<div id="message"></div>
+</div>
 
-<section class="form-box" id="add">
+<div class="box hidden" id="addBox">
+<h2 id="formTitle">აქციის დამატება</h2>
 
-<h2>🏪 დაამატე შენი აქცია</h2>
+<input id="title" placeholder="აქციის დასახელება">
+<input id="description" placeholder="აღწერა">
+<input id="store" placeholder="მაღაზიის დასახელება">
 
-<p>მაღაზიას შეუძლია შეავსოს შეთავაზების ინფორმაცია.</p>
-
-<form id="offerForm">
-
-<input id="store" placeholder="მაღაზიის დასახელება" required>
-
-<input id="product" placeholder="პროდუქტის დასახელება" required>
-
-<select id="category" required>
+<select id="category">
 <option value="">აირჩიე კატეგორია</option>
 <option>საკვები</option>
 <option>ტექნიკა</option>
-<option>სახლი</option>
 <option>ტანსაცმელი</option>
+<option>ავეჯი</option>
+<option>ავტომობილები</option>
+<option>კოსმეტიკა</option>
 <option>სხვა</option>
 </select>
 
-<input id="oldPrice" type="number" min="0"
-placeholder="ძველი ფასი (ლარი)" required>
+<input id="price" type="number" step="0.01" placeholder="ახალი ფასი">
+<input id="oldPrice" type="number" step="0.01" placeholder="ძველი ფასი">
+<input id="image" placeholder="ფოტოს ბმული (არასავალდებულო)">
+<input id="startDate" type="date">
+<input id="endDate" type="date">
 
-<input id="newPrice" type="number" min="0"
-placeholder="ახალი ფასი (ლარი)" required>
+<button onclick="saveOffer()">აქციის შენახვა</button>
+<button class="logout" onclick="cancelEdit()">გაუქმება</button>
+</div>
 
-<input id="photo" type="url"
-placeholder="პროდუქტის ფოტოს ბმული">
+<div class="box">
+<h2>მოძებნე აქციები</h2>
+<input id="search" placeholder="მოძებნე მაღაზია ან პროდუქტი..." oninput="filterOffers()">
 
-<input id="link" type="url"
-placeholder="მაღაზიის პროდუქტის ბმული">
+<select id="filter" onchange="filterOffers()">
+<option value="">ყველა კატეგორია</option>
+<option>საკვები</option>
+<option>ტექნიკა</option>
+<option>ტანსაცმელი</option>
+<option>ავეჯი</option>
+<option>ავტომობილები</option>
+<option>კოსმეტიკა</option>
+<option>სხვა</option>
+</select>
+</div>
 
-<button class="add-button" type="submit">
-აქციის დამატება
-</button>
-
-</form>
-</section>
+<h2>მიმდინარე აქციები</h2>
+<div id="offers" class="grid">იტვირთება...</div>
 
 </div>
 
 <footer>
-<h2>AKCIEBI.GE</h2>
-<p>საქართველოს ფასდაკლებების პლატფორმა</p>
-<p>ყველა უფლება დაცულია © 2026</p>
+AKCIEBI.GE © 2026 — აქციები საქართველოში
 </footer>
 
 <script>
 
-let offers = JSON.parse(localStorage.getItem("offers")) || [];
+const SUPABASE_URL =
+'https://hmdkcezcpmdtpbajjfli.supabase.co';
 
-let selectedCategory = "ყველა";
+const SUPABASE_KEY =
+'sb_publishable__v2TkxSNYHNVuIa8P7lQuQ_-SnQqFio';
 
-function saveOffers(){
- localStorage.setItem("offers",JSON.stringify(offers));
-}
-
-function setCategory(category){
- selectedCategory=category;
- showProducts();
-}
-
-function showProducts(){
-
- let search=document.getElementById("search").value.toLowerCase();
-
- let box=document.getElementById("products");
-
- box.innerHTML="";
-
- let filtered=offers.filter(item=>{
-
- let matchesCategory=
- selectedCategory==="ყველა" ||
- item.category===selectedCategory;
-
- let matchesSearch=
- (item.product+" "+item.store).toLowerCase().includes(search);
-
- return matchesCategory && matchesSearch;
-
- });
-
- if(filtered.length===0){
- box.innerHTML='<div class="empty">ამ კატეგორიაში შეთავაზებები ჯერ არ არის.</div>';
- return;
- }
-
- filtered.forEach(item=>{
-
- let card=document.createElement("div");
- card.className="card";
-
- let image=document.createElement("img");
- image.src=item.photo || "https://placehold.co/400x250?text=AKCIEBI.GE";
- image.alt=item.product;
-
- image.onerror=()=>{
- image.src="https://placehold.co/400x250?text=AKCIEBI.GE";
- };
-
- let content=document.createElement("div");
- content.className="card-content";
-
- let title=document.createElement("h3");
- title.textContent=item.product;
-
- let store=document.createElement("p");
- store.textContent="მაღაზია: "+item.store;
-
- let price=document.createElement("p");
- price.className="price";
- price.textContent=item.newPrice+" ₾";
-
- let old=document.createElement("p");
- old.className="old";
- old.textContent=item.oldPrice+" ₾";
-
- content.append(title,store,old,price);
-
- if(item.link){
- let a=document.createElement("a");
- a.className="details";
- a.href=item.link;
- a.target="_blank";
- a.rel="noopener noreferrer";
- a.textContent="მაღაზიაში გადასვლა";
- content.append(a);
- }
-
- card.append(image,content);
- box.append(card);
-
- });
-
-}
-
-document.getElementById("offerForm").addEventListener("submit",function(e){
-
- e.preventDefault();
-
- let item={
-
- store:document.getElementById("store").value,
- product:document.getElementById("product").value,
- category:document.getElementById("category").value,
- oldPrice:document.getElementById("oldPrice").value,
- newPrice:document.getElementById("newPrice").value,
- photo:document.getElementById("photo").value,
- link:document.getElementById("link").value
-
- };
-
- if(Number(item.newPrice)>=Number(item.oldPrice)){
- alert("ახალი ფასი ძველ ფასზე ნაკლები უნდა იყოს.");
- return;
- }
-
- offers.push(item);
-
- saveOffers();
-
- showProducts();
-
- this.reset();
-
- alert("აქცია წარმატებით დაემატა!");
-
-});
-
-showProducts();
-
-</script>
-
-</body><!-- Supabase connection -->
-<script type="module">
-import { createClient } from
-'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-const supabase = createClient(
-  'https://hmdkcezcpmdtpbajjfli.supabase.co',
-  'sb_publishable__v2TkxSNYHNVuIa8P7lQuQ_-SnQqFio'
+const db = window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
 );
 
-async function loadOffers() {
-  const { data, error } = await supabase
-    .from('offers')
-    .select('*')
-    .order('created_at', { ascending: false });
+let currentUser = null;
+let allOffers = [];
+let editingId = null;
 
-  if (!error) {
-    offers = data;
-    saveOffers();
-    showProducts();
-  } else {
-    console.log(error);
-  }
+function message(text){
+ document.getElementById('message').textContent=text;
 }
 
-loadOffers();
-</script>
-</html>
+function escapeHTML(value){
+ return String(value ?? '').replace(/[&<>"']/g,function(c){
+  return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+ });
+}
+
+async function register(){
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+
+ if(!email || password.length<6){
+  message('შეიყვანე ელფოსტა და მინიმუმ 6 სიმბოლოს პაროლი');
+  return;
+ }
+
+ const {data,error}=await db.auth.signUp({email,password});
+
+ if(error){message(error.message);return;}
+
+ message('რეგისტრაცია შესრულდა. თუ ელფოსტის დადასტურებას ითხოვს, შეამოწმე ფოსტა.');
+}
+
+async function login(){
+ const email=document.getElementById('email').value.trim();
+ const password=document.getElementById('password').value;
+
+ const {data,error}=await db.auth.signInWithPassword({
+  email,password
+ });
+
+ if(error){message(error.message);return;}
+
+ currentUser=data.user;
+ updateAccount();
+ await loadOffers();
+ message('შესვლა წარმატებულია!');
+}
+
+async function logout(){
+ const {error}=await db.auth.signOut();
+ if(error){message

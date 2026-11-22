@@ -100,14 +100,15 @@ const translations={
 }};
 const langKey='akciebi-language';
 let lang=localStorage.getItem(langKey)||'ka';
+const originalText=new WeakMap(),originalAttrs=new WeakMap();
 const select=document.getElementById('languageSelect');
 if(select){select.value=lang;select.addEventListener('change',()=>{lang=select.value;localStorage.setItem(langKey,lang);applyLanguage()})}
 function translated(s){const v=translations[s];return v?(lang==='ka'?s:v[lang==='ru'?1:0]):s}
 function applyLanguage(){
 document.documentElement.lang=lang;
 const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
-let n;while(n=walk.nextNode()){const raw=n.nodeValue,trim=raw.trim();if(!trim)continue;const out=translated(trim);if(out!==trim)n.nodeValue=raw.replace(trim,out)}
-document.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>['placeholder','aria-label','title'].forEach(a=>{const v=el.getAttribute(a);if(v)el.setAttribute(a,translated(v))}));
+let n;while(n=walk.nextNode()){if(!originalText.has(n))originalText.set(n,n.nodeValue);const raw=originalText.get(n),trim=raw.trim();if(!trim)continue;const out=translated(trim);const next=raw.replace(trim,out);if(n.nodeValue!==next)n.nodeValue=next}
+document.querySelectorAll('[placeholder],[aria-label],[title]').forEach(el=>['placeholder','aria-label','title'].forEach(a=>{if(!el.hasAttribute(a))return;let saved=originalAttrs.get(el);if(!saved){saved={};originalAttrs.set(el,saved)}if(!(a in saved))saved[a]=el.getAttribute(a);el.setAttribute(a,translated(saved[a]))}));
 document.title=lang==='ka'?'AKCIEBI.GE — ყველა აქცია ერთ სივრცეში':lang==='ru'?'AKCIEBI.GE — все акции в одном месте':'AKCIEBI.GE — all deals in one place';
 if(select)select.value=lang;
 }

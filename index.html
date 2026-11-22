@@ -162,7 +162,7 @@ let lang=localStorage.getItem(langKey)||'ka';
 const originalText=new WeakMap(),originalAttrs=new WeakMap();
 const select=document.getElementById('languageSelect');
 if(select){select.value=lang;select.addEventListener('change',()=>{lang=select.value;localStorage.setItem(langKey,lang);applyLanguage()})}
-function translated(s){if(lang==='ka')return s;const exact=translations[s];if(exact)return exact[lang==='ru'?1:0];let out=s;const keys=Object.keys(translations).filter(k=>k.length>2).sort((a,b)=>b.length-a.length);for(const k of keys){if(out.includes(k)){const v=translations[k];out=out.split(k).join(v[lang==='ru'?1:0])}}return out}
+function translated(s){if(lang==='ka')return s;const dictionary=translations.ka||{};const exact=dictionary[s];if(exact)return exact[lang==='ru'?1:0];let out=s;const keys=Object.keys(dictionary).filter(k=>k.length>2).sort((a,b)=>b.length-a.length);for(const k of keys){if(out.includes(k)){const v=dictionary[k];out=out.split(k).join(v[lang==='ru'?1:0])}}return out}
 function applyLanguage(){
 document.documentElement.lang=lang;
 const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);

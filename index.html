@@ -134,13 +134,35 @@ const translations={
 ,"ცვლილებების შენახვა":["Save changes","Сохранить изменения"]
 ,"მდებარეობის ნახვა რუკაზე":["View on map","Посмотреть на карте"]
 
+"შესული ხარ:":["Signed in:","Вы вошли:"],
+"ჩემი პროფილი":["My profile","Мой профиль"],
+"შედი ანგარიშში პროფილის სამართავად.":["Sign in to manage your profile.","Войдите, чтобы управлять профилем."],
+"აქციების ჩატვირთვა ვერ მოხერხდა.":["Could not load deals.","Не удалось загрузить акции."],
+"მოქმედებს:":["Valid until:","Действует до:"],
+"შენახვა ვერ მოხერხდა:":["Could not save:","Не удалось сохранить:"],
+"ჯერ შედი ანგარიშში.":["Please sign in first.","Сначала войдите в аккаунт."],
+"მოქმედება ვერ შესრულდა:":["Action failed:","Не удалось выполнить действие:"],
+"უცნობი შეცდომა":["Unknown error","Неизвестная ошибка"],
+"ანგარიშის შემოწმება ვერ მოხერხდა:":["Could not check account:","Не удалось проверить аккаунт:"],
+"სერვერთან კავშირი ვერ მოხერხდა:":["Could not connect to the server:","Не удалось подключиться к серверу:"],
+"შესული ხარ":["Signed in","Вы вошли"],
+"აპლიკაცია უკვე დაყენებულია ✓":["App is already installed ✓","Приложение уже установлено ✓"],
+"AKCIEBI უკვე დაინსტალირებულია შენს მოწყობილობაზე.":["AKCIEBI is already installed on your device.","AKCIEBI уже установлено на вашем устройстве."],
+"დააჭირე ღილაკს და დააინსტალირე აპლიკაცია.":["Click the button to install the app.","Нажмите кнопку, чтобы установить приложение."],
+"აპლიკაცია წარმატებით დაინსტალირდა.":["App installed successfully.","Приложение успешно установлено."],
+"iPhone-ზე Safari-ში დააჭირე გაზიარების ღილაკს და აირჩიე „Add to Home Screen“ / „მთავარ ეკრანზე დამატება“.":["On iPhone in Safari, tap Share and choose “Add to Home Screen”.","На iPhone в Safari нажмите «Поделиться» и выберите «На экран Домой»."],
+"iPhone-ზე გახსენი ეს საიტი Safari-ში, დააჭირე გაზიარებას და აირჩიე „Add to Home Screen“.":["Open this site in Safari on iPhone, tap Share, then choose “Add to Home Screen”.","Откройте сайт в Safari на iPhone, нажмите «Поделиться», затем «На экран Домой»."],
+"ბრაუზერის მენიუში (⋮) აირჩიე „Install app“, „Install AKCIEBI“ ან „აპის ინსტალაცია“. თუ ეს არჩევანი არ ჩანს, განაახლე Chrome ან Edge.":["In the browser menu (⋮), choose “Install app” or “Install AKCIEBI”. If unavailable, update Chrome or Edge.","В меню браузера (⋮) выберите «Установить приложение» или «Install AKCIEBI». Если пункта нет, обновите Chrome или Edge."],
+"აპლიკაციის ინსტალაცია დაიწყო.":["App installation started.","Установка приложения началась."],
+"ინსტალაცია გაუქმდა.":["Installation cancelled.","Установка отменена."],
+"ყველა აქცია ერთ სივრცეში":["All deals in one place","Все акции в одном месте"]
 }};
 const langKey='akciebi-language';
 let lang=localStorage.getItem(langKey)||'ka';
 const originalText=new WeakMap(),originalAttrs=new WeakMap();
 const select=document.getElementById('languageSelect');
 if(select){select.value=lang;select.addEventListener('change',()=>{lang=select.value;localStorage.setItem(langKey,lang);applyLanguage()})}
-function translated(s){const v=translations[s];return v?(lang==='ka'?s:v[lang==='ru'?1:0]):s}
+function translated(s){if(lang==='ka')return s;const exact=translations[s];if(exact)return exact[lang==='ru'?1:0];let out=s;const keys=Object.keys(translations).filter(k=>k.length>2).sort((a,b)=>b.length-a.length);for(const k of keys){if(out.includes(k)){const v=translations[k];out=out.split(k).join(v[lang==='ru'?1:0])}}return out}
 function applyLanguage(){
 document.documentElement.lang=lang;
 const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);

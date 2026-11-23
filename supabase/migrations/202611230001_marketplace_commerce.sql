@@ -28,6 +28,11 @@ create table if not exists public.seller_orders (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references public.orders(id) on delete restrict,
   seller_id uuid not null references auth.users(id) on delete restrict,
+  recipient_name text not null,
+  recipient_phone text not null,
+  delivery_city text not null,
+  delivery_address text not null,
+  delivery_note text,
   subtotal_tetri bigint not null check (subtotal_tetri >= 0),
   delivery_tetri bigint not null default 0 check (delivery_tetri >= 0),
   status text not null default 'awaiting_payment'
@@ -171,13 +176,7 @@ alter table public.seller_payouts enable row level security;
 drop policy if exists "order_participants_read_orders" on public.orders;
 create policy "order_participants_read_orders" on public.orders
 for select to authenticated
-using (
-  buyer_id = (select auth.uid())
-  or exists (
-    select 1 from public.seller_orders so
-    where so.order_id = orders.id and so.seller_id = (select auth.uid())
-  )
-);
+using (buyer_id = (select auth.uid()));
 
 drop policy if exists "seller_reads_own_seller_orders" on public.seller_orders;
 create policy "seller_reads_own_seller_orders" on public.seller_orders
@@ -260,3 +259,15 @@ for select to authenticated using (seller_id = (select auth.uid()));
 
 -- Deliberately no client INSERT/UPDATE/DELETE policies. A trusted server-side
 -- function with verified payment webhooks must perform all state transitions.
+
+-- The tables are intentionally unavailable to anon/authenticated clients.
+-- When the project is configured for the Data API during approved activation,
+-- expose public schema only as needed and keep these grants service-role-only.
+revoke all on public.orders, public.seller_orders, public.order_items,
+  public.payment_transactions, public.order_events, public.seller_verifications,
+  public.disputes, public.dispute_evidence, public.refund_requests,
+  public.seller_payouts from anon, authenticated;
+grant all on public.orders, public.seller_orders, public.order_items,
+  public.payment_transactions, public.order_events, public.seller_verifications,
+  public.disputes, public.dispute_evidence, public.refund_requests,
+  public.seller_payouts to service_role;

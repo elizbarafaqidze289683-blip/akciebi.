@@ -80,15 +80,93 @@ function msg(t,err=false){$('message').textContent=t;$('message').classList.togg
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function account(){document.body.classList.toggle('authenticated',!!currentUser);$('authBox').classList.toggle('hidden',!!currentUser || $('authBox').dataset.open!=='true');const name=currentUser?.user_metadata?.display_name||currentUser?.user_metadata?.full_name||'';$('guestAuthActions').classList.toggle('hidden',!!currentUser);$('profileBtn').classList.toggle('hidden',!currentUser);$('profileButtonText').textContent=name||'ჩემი პროფილი';$('profileAvatar').textContent=name?name.trim().charAt(0).toLocaleUpperCase('ka'):'👤';$('displayName').value=name;$('profileEmail').textContent=currentUser?(currentUser.email||''):'';$('profileBtn').classList.toggle('signed-in',!!currentUser);if(!currentUser)offerFormOpen=false;$('addBox').classList.toggle('hidden',!currentUser||!offerFormOpen);$('authBox').classList.remove('compact-auth');if(currentUser&&offerFormOpen)setTimeout(()=>offerMap&&offerMap.invalidateSize(),300)}
 const categoryFieldDefinitions={
-'დესკტოპ კომპიუტერები':[{key:'processor_brand',label:'პროცესორის მწარმოებელი',type:'select',options:['Intel','AMD Ryzen']},{key:'processor',label:'პროცესორის მოდელი',placeholder:'მაგ. Core i7-12700K / Ryzen 7 5800X'},{key:'gpu',label:'ვიდეოკარტა',type:'select',options:['NVIDIA GeForce','AMD Radeon','Intel Arc','ინტეგრირებული']},{key:'gpu_model',label:'ვიდეოკარტის მოდელი',placeholder:'მაგ. RTX 4070'},{key:'ram',label:'ოპერატიული მეხსიერება',type:'select',options:['8 GB','16 GB','32 GB','64 GB','128 GB']},{key:'storage',label:'მეხსიერება',placeholder:'მაგ. 1TB SSD + 2TB HDD'}],
-'ავტომობილები':[{key:'car_make',label:'ავტომობილის მარკა',type:'select',options:['BMW','Mercedes-Benz','Toyota','Volkswagen','Audi','Honda','Hyundai','Kia','Ford','Nissan','Lexus','Mazda','Subaru','Mitsubishi','Chevrolet','სხვა']},{key:'car_model',label:'მოდელი',placeholder:'მაგ. X5, C-Class, Camry'},{key:'year',label:'გამოშვების წელი',type:'number',placeholder:'მაგ. 2018'},{key:'fuel',label:'საწვავი',type:'select',options:['ბენზინი','დიზელი','ჰიბრიდი','ელექტრო','გაზი']},{key:'transmission',label:'გადაცემათა კოლოფი',type:'select',options:['ავტომატიკა','მექანიკა','CVT']},{key:'mileage',label:'გარბენი (კმ)',type:'number',placeholder:'მაგ. 120000'},{key:'engine',label:'ძრავის მოცულობა',placeholder:'მაგ. 2.0'}],
-'ტექნიკა':[{key:'device_type',label:'ტექნიკის ტიპი',type:'select',options:['ლეპტოპი','ტელეფონი','ტელევიზორი','მონიტორი','ტაბლეტი','ფოტოკამერა','სათამაშო კონსოლი','სხვა']},{key:'tech_brand',label:'ბრენდი',placeholder:'მაგ. Apple, Samsung, Lenovo'},{key:'tech_model',label:'მოდელი',placeholder:'მოდელის დასახელება'},{key:'tech_memory',label:'მეხსიერება',placeholder:'მაგ. 256 GB'}],
-'ტანსაცმელი':[{key:'clothing_type',label:'ტანსაცმლის ტიპი',type:'select',options:['მაისური','შარვალი','ქურთუკი','კაბა','ფეხსაცმელი','აქსესუარი','სხვა']},{key:'size',label:'ზომა',placeholder:'მაგ. S, M, L, 42'},{key:'gender',label:'ვისთვის',type:'select',options:['ქალი','კაცი','ბავშვი','უნისექსი']},{key:'material',label:'მასალა',placeholder:'მაგ. ბამბა, ტყავი'}],
-'ავეჯი':[{key:'furniture_type',label:'ავეჯის ტიპი',type:'select',options:['დივანი','საწოლი','მაგიდა','სკამი','კარადა','სამზარეულო','სხვა']},{key:'material',label:'მასალა',placeholder:'მაგ. ხე, MDF, მეტალი'},{key:'color',label:'ფერი',placeholder:'ფერი'},{key:'dimensions',label:'ზომები',placeholder:'სიგრძე × სიგანე × სიმაღლე'}],
-'კოსმეტიკა':[{key:'cosmetic_type',label:'პროდუქტის ტიპი',type:'select',options:['სუნამო','კრემი','შამპუნი','მაკიაჟი','კანის მოვლა','თმის მოვლა','სხვა']},{key:'cosmetic_brand',label:'ბრენდი',placeholder:'ბრენდის სახელი'},{key:'volume',label:'მოცულობა',placeholder:'მაგ. 50 მლ'},{key:'skin_type',label:'კანის ტიპი',type:'select',options:['ყველა ტიპი','მშრალი','ცხიმიანი','კომბინირებული','მგრძნობიარე','არ ეხება']}],
-'სხვა':[{key:'item_type',label:'ნივთის ტიპი',placeholder:'რა ტიპის ნივთია?'},{key:'item_brand',label:'ბრენდი',placeholder:'ბრენდი'},{key:'item_condition',label:'მდგომარეობა',type:'select',options:['ახალი','მეორადი','ახალივით']}]
+'დესკტოპ კომპიუტერები':[
+{key:'processor_brand',label:'პროცესორის მწარმოებელი',type:'select',options:['Intel','AMD Ryzen']},
+{key:'processor',label:'პროცესორის მოდელი',placeholder:'მაგ. Core i7-12700K / Ryzen 7 5800X'},
+{key:'gpu',label:'ვიდეოკარტის მწარმოებელი',type:'select',options:['NVIDIA GeForce','AMD Radeon','Intel Arc','ინტეგრირებული']},
+{key:'gpu_model',label:'ვიდეოკარტის მოდელი',placeholder:'მაგ. RTX 4070 12GB'},
+{key:'ram',label:'ოპერატიული მეხსიერება',type:'select',options:['4 GB','8 GB','16 GB','32 GB','64 GB','128 GB']},
+{key:'ram_type',label:'RAM ტიპი',type:'select',options:['DDR3','DDR4','DDR5']},
+{key:'storage',label:'დისკის მოცულობა და ტიპი',placeholder:'მაგ. 1TB NVMe SSD + 2TB HDD'},
+{key:'motherboard',label:'დედაპლატა',placeholder:'მწარმოებელი და მოდელი'},
+{key:'power_supply',label:'კვების ბლოკი',placeholder:'მაგ. 750W 80+ Gold'},
+{key:'case_type',label:'კორპუსი',placeholder:'კორპუსის მოდელი / ზომა'},
+{key:'monitor_included',label:'მონიტორი მოყვება?',type:'select',options:['კი','არა']},
+{key:'pc_os',label:'ოპერაციული სისტემა',type:'select',options:['Windows 11','Windows 10','Linux','სისტემის გარეშე']}
+],
+'ავტომობილები':[
+{key:'car_make',label:'მარკა',type:'select',options:['BMW','Mercedes-Benz','Toyota','Volkswagen','Audi','Honda','Hyundai','Kia','Ford','Nissan','Lexus','Mazda','Subaru','Mitsubishi','Chevrolet','Tesla','Porsche','სხვა']},
+{key:'car_model',label:'მოდელი',placeholder:'მაგ. X5, C-Class, Camry'},
+{key:'year',label:'გამოშვების წელი',type:'number',placeholder:'მაგ. 2018'},
+{key:'body_type',label:'ძარის ტიპი',type:'select',options:['სედანი','ჰეჩბეკი','უნივერსალი','SUV / ჯიპი','კუპე','კაბრიოლეტი','პიკაპი','მინივენი','სხვა']},
+{key:'fuel',label:'საწვავის ტიპი',type:'select',options:['ბენზინი','დიზელი','ჰიბრიდი','დამტენი ჰიბრიდი','ელექტრო','გაზი']},
+{key:'engine',label:'ძრავის მოცულობა',placeholder:'მაგ. 2.0 ლ'},
+{key:'transmission',label:'გადაცემათა კოლოფი',type:'select',options:['ავტომატიკა','მექანიკა','CVT','რობოტი']},
+{key:'drive_type',label:'წამყვანი თვლები',type:'select',options:['წინა (FWD)','უკანა (RWD)','სრული (AWD / 4WD)']},
+{key:'mileage',label:'გარბენი (კმ)',type:'number',placeholder:'მაგ. 120000'},
+{key:'steering_wheel',label:'საჭე',type:'select',options:['მარცხენა','მარჯვენა']},
+{key:'car_color',label:'ფერი',placeholder:'ავტომობილის ფერი'},
+{key:'customs',label:'განბაჟება',type:'select',options:['განბაჟებული','განსაბაჟებელი']},
+{key:'car_status',label:'მდგომარეობა',type:'select',options:['შეუღებავი','შეღებილი','ავარიული','შეკეთებას საჭიროებს']}
+],
+'ტექნიკა':[
+{key:'device_type',label:'ტექნიკის ტიპი',type:'select',options:['ლეპტოპი','მობილური ტელეფონი','ტელევიზორი','მონიტორი','ტაბლეტი','ფოტოკამერა','სათამაშო კონსოლი','პრინტერი','აუდიო სისტემა','საყოფაცხოვრებო ტექნიკა','სხვა']},
+{key:'tech_brand',label:'ბრენდი',placeholder:'მაგ. Apple, Samsung, Lenovo'},
+{key:'tech_model',label:'მოდელი',placeholder:'მოდელის სრული დასახელება'},
+{key:'tech_memory',label:'შიდა მეხსიერება / დისკი',placeholder:'მაგ. 256 GB, 1 TB SSD'},
+{key:'tech_ram',label:'ოპერატიული მეხსიერება',placeholder:'მაგ. 8 GB / 16 GB'},
+{key:'tech_screen',label:'ეკრანის ზომა',placeholder:'მაგ. 6.1 ინჩი / 15.6 ინჩი'},
+{key:'tech_color',label:'ფერი',placeholder:'ნივთის ფერი'},
+{key:'tech_warranty',label:'გარანტია',type:'select',options:['აქვს გარანტია','არ აქვს გარანტია','მაღაზიის გარანტია']},
+{key:'tech комплект',label:'კომპლექტაცია',placeholder:'რა მოყვება ნივთს?'}
+],
+'ტანსაცმელი':[
+{key:'clothing_type',label:'პროდუქტის ტიპი',type:'select',options:['მაისური','პერანგი','შარვალი','ჯინსი','ქურთუკი','პალტო','კაბა','ქვედაბოლო','სპორტული ფორმა','ფეხსაცმელი','ჩანთა','აქსესუარი','სხვა']},
+{key:'gender',label:'ვისთვისაა?',type:'select',options:['ქალი','კაცი','ბავშვი','უნისექსი']},
+{key:'size',label:'ზომა',placeholder:'მაგ. XS, S, M, L, XL, 42'},
+{key:'clothing_brand',label:'ბრენდი',placeholder:'ტანსაცმლის ბრენდი'},
+{key:'material',label:'მასალა',placeholder:'მაგ. ბამბა, ტყავი, პოლიესტერი'},
+{key:'clothing_color',label:'ფერი',placeholder:'პროდუქტის ფერი'},
+{key:'season',label:'სეზონი',type:'select',options:['ზაფხული','ზამთარი','გაზაფხული / შემოდგომა','ყველა სეზონი']},
+{key:'shoe_size',label:'ფეხსაცმლის ზომა',placeholder:'მაგ. 38, 42 (თუ ფეხსაცმელია)'},
+{key:'clothing_fit',label:'მორგება',type:'select',options:['Slim','Regular','Oversize','არ ეხება']},
+{key:'clothing_material_state',label:'მდგომარეობის დეტალი',type:'select',options:['ახალი, იარლიყით','ახალი, იარლიყის გარეშე','მეორადი, კარგ მდგომარეობაში']}
+],
+'ავეჯი':[
+{key:'furniture_type',label:'ავეჯის ტიპი',type:'select',options:['დივანი','საწოლი','მაგიდა','სკამი','კარადა','კომოდი','სამზარეულო','თარო','სავარძელი','საბავშვო ავეჯი','სხვა']},
+{key:'furniture_brand',label:'მწარმოებელი / ბრენდი',placeholder:'ბრენდი ან მწარმოებელი'},
+{key:'material',label:'მასალა',placeholder:'მაგ. ხე, MDF, მეტალი'},
+{key:'dimensions',label:'ზომები',placeholder:'სიგრძე × სიგანე × სიმაღლე (სმ)'},
+{key:'color',label:'ფერი',placeholder:'ავეჯის ფერი'},
+{key:'seats',label:'ადგილების რაოდენობა',type:'number',placeholder:'მაგ. 3'},
+{key:'assembly',label:'აწყობილი მდგომარეობა',type:'select',options:['აწყობილი','დაუწყობელი','ნაწილობრივ აწყობილი']},
+{key:'furniture_style',label:'სტილი',type:'select',options:['თანამედროვე','კლასიკური','მინიმალისტური','სკანდინავიური','სხვა']},
+{key:'furniture_condition',label:'მდგომარეობა',type:'select',options:['ახალი','მეორადი — იდეალური','მეორადი — კარგი','დაზიანებული']}
+],
+'კოსმეტიკა':[
+{key:'cosmetic_type',label:'პროდუქტის ტიპი',type:'select',options:['სუნამო','კრემი','შრატი','შამპუნი','მაკიაჟი','ტუჩსაცხი','კანის მოვლა','თმის მოვლა','სხეულის მოვლა','სხვა']},
+{key:'cosmetic_brand',label:'ბრენდი',placeholder:'ბრენდის სახელი'},
+{key:'cosmetic_name',label:'პროდუქტის დასახელება',placeholder:'სრული დასახელება / ხაზი'},
+{key:'volume',label:'მოცულობა / წონა',placeholder:'მაგ. 50 მლ / 100 გ'},
+{key:'skin_type',label:'კანის ტიპი',type:'select',options:['ყველა ტიპი','მშრალი','ცხიმიანი','კომბინირებული','მგრძნობიარე','არ ეხება']},
+{key:'cosmetic_gender',label:'ვისთვისაა?',type:'select',options:['ქალი','კაცი','უნისექსი','ბავშვი']},
+{key:'cosmetic_origin',label:'წარმოშობის ქვეყანა',placeholder:'ქვეყანა'},
+{key:'cosmetic_expiry',label:'ვარგისიანობა',placeholder:'ვარგისიანობის თარიღი'},
+{key:'cosmetic_sealed',label:'შეფუთვა',type:'select',options:['დალუქული / გაუხსნელი','გახსნილი','ტესტერი']}
+],
+'სხვა':[
+{key:'item_type',label:'ნივთის კატეგორია',type:'select',options:['სპორტი და დასვენება','ბავშვის ნივთები','სათამაშოები','წიგნები','ინსტრუმენტები','სამკაულები','ცხოველების ნივთები','საოჯახო ნივთები','სხვა']},
+{key:'item_brand',label:'ბრენდი / მწარმოებელი',placeholder:'ბრენდი ან მწარმოებელი'},
+{key:'item_model',label:'მოდელი / დასახელება',placeholder:'მოდელი ან სრული დასახელება'},
+{key:'item_condition',label:'მდგომარეობა',type:'select',options:['ახალი','მეორადი — იდეალური','მეორადი — კარგი','შეკეთებას საჭიროებს']},
+{key:'item_material',label:'მასალა',placeholder:'რისგან არის დამზადებული?'},
+{key:'item_color',label:'ფერი',placeholder:'ფერი'},
+{key:'item_size',label:'ზომა / ზომები',placeholder:'ზომა ან ზომები'},
+{key:'item_quantity',label:'რაოდენობა',type:'number',placeholder:'რამდენი ცალია?'},
+{key:'item_details',label:'დამატებითი მახასიათებელი',placeholder:'მიუთითე მნიშვნელოვანი დეტალი'}
+]
 };
-function renderCategoryFields(category,storedDescription=''){const root=$('categoryFields');if(!root)return;const defs=categoryFieldDefinitions[category]||[];if(!defs.length){root.innerHTML='';root.classList.add('hidden');return}root.classList.remove('hidden');root.innerHTML='<h3>კატეგორიის მახასიათებლები</h3>'+defs.map(f=>'<label>'+esc(f.label)+(f.type==='select'?'<select data-spec="'+f.key+'"><option value="">აირჩიე</option>'+f.options.map(v=>'<option>'+esc(v)+'</option>').join('')+'</select>':'<input data-spec="'+f.key+'" type="'+(f.type||'text')+'" '+(f.type==='number'?'min="0" ':'')+'placeholder="'+esc(f.placeholder||'')+'">')+'</label>').join('');const match=String(storedDescription||'').match(/\n\n\[AKCIEBI_SPECS\]([\s\S]*)$/);if(match){try{const values=JSON.parse(match[1]);root.querySelectorAll('[data-spec]').forEach(el=>{el.value=values[el.dataset.spec]||''})}catch(e){}}}
+function renderCategoryFields(category,storedDescription=''){const root=$('categoryFields');if(!root)return;const defs=categoryFieldDefinitions[category]||[];if(!defs.length){root.innerHTML='';root.classList.add('hidden');return}root.classList.remove('hidden');root.innerHTML='<h3>'+esc(category)+' — განცხადების მახასიათებლები</h3>'+defs.map(f=>'<label>'+esc(f.label)+(f.type==='select'?'<select data-spec="'+f.key+'"><option value="">აირჩიე</option>'+f.options.map(v=>'<option>'+esc(v)+'</option>').join('')+'</select>':'<input data-spec="'+f.key+'" type="'+(f.type||'text')+'" '+(f.type==='number'?'min="0" ':'')+'placeholder="'+esc(f.placeholder||'')+'">')+'</label>').join('');const match=String(storedDescription||'').match(/\n\n\[AKCIEBI_SPECS\]([\s\S]*)$/);if(match){try{const values=JSON.parse(match[1]);root.querySelectorAll('[data-spec]').forEach(el=>{el.value=values[el.dataset.spec]||''})}catch(e){}}}
 function collectCategorySpecs(){const root=$('categoryFields'),values={};root?.querySelectorAll('[data-spec]').forEach(el=>{if(el.value.trim())values[el.dataset.spec]=el.value.trim()});return Object.keys(values).length?'\n\n[AKCIEBI_SPECS]'+JSON.stringify(values):''}
 
 function localDateString(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}

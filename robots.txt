@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://akciebi.pages.dev/sitemap.xml
+Sitemap: https://www.geomarket.fs.kg/sitemap.xml
